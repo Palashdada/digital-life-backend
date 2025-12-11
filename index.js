@@ -68,6 +68,17 @@ async function run() {
 
       res.send({ message: "Liked" });
     });
+    app.post("/lessons/:id/favorite", verifyToken, async (req, res) => {
+      const userEmail = req.user.email;
+      const lessonId = req.params.id;
+
+      await lessons.updateOne(
+        { _id: new ObjectId(lessonId) },
+        { $addToSet: { favorites: userEmail } }
+      );
+
+      res.send({ message: "Favorited" });
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
