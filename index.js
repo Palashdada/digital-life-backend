@@ -38,6 +38,25 @@ async function run() {
       });
       res.send(lesson);
     });
+    app.post("/lessons", verifyToken, isAdmin, async (req, res) => {
+      const data = req.body;
+      data.createdAt = new Date();
+      const result = await lessons.insertOne(data);
+      res.send(result);
+    });
+    app.put("/lessons/:id", verifyToken, isAdmin, async (req, res) => {
+      const result = await lessons.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: req.body }
+      );
+      res.send(result);
+    });
+    app.delete("/lessons/:id", verifyToken, isAdmin, async (req, res) => {
+      const result = await lessons.deleteOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
