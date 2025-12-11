@@ -57,6 +57,17 @@ async function run() {
       });
       res.send(result);
     });
+    app.post("/lessons/:id/like", verifyToken, async (req, res) => {
+      const userEmail = req.user.email;
+      const lessonId = req.params.id;
+
+      await lessons.updateOne(
+        { _id: new ObjectId(lessonId) },
+        { $addToSet: { likes: userEmail } }
+      );
+
+      res.send({ message: "Liked" });
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
